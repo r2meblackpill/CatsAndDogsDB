@@ -39,5 +39,27 @@ namespace CatsAndDogsDB
                 listPets.DataSource = petTable;
             }
         }
+
+        private void PopulatePetNames()
+        {
+            string query = "SELECT Pet.Name FROM PetType INNER JOIN Pet ON Pet.TypeId WHERE PetType.Id = @TypeId";
+            using (connection = new SqlConnection(connectionString))
+            using (SqlCommand command = new SqlCommand(query, connection))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+            {
+                command.Parameters.AddWithValue("@TypeId", listPets.SelectedValue);
+                DataTable petNameTable = new DataTable();
+                adapter.Fill(petNameTable);
+
+                listPetNames.DisplayMember = "Name";
+                listPetNames.ValueMember = "Id";
+                listPetNames.DataSource = petNameTable;
+            }
+        }
+
+        private void listPets_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PopulatePetNames();
+        }
     }
 }
